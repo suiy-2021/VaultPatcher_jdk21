@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = "all-${mod_version}"
+version = "test-${mod_version}"
 group = 'me.fengming.vaultpatcher'
 
 java {

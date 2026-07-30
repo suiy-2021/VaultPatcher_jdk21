@@ -1,16 +1,47 @@
 plugins {
-    id 'maven-publish'
     id 'java'
+    id 'maven-publish'
 }
 
-apply plugin: 'maven-publish'
 version = "all-${mod_version}"
 group = 'me.fengming.vaultpatcher'
 
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// 仓库配置（国内镜像优先）
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    mavenCentral()
+    maven { url 'https://maven.fabricmc.net/' }
+    maven { url 'https://maven.minecraftforge.net/' }
+    maven { url 'https://libraries.minecraft.net/' }
+    maven { url 'https://jitpack.io/' }
+}
+
+dependencies {
+    compileOnly 'org.jetbrains:annotations:23.0.0'
+
+    // 升级 Gson 至 2.10.1（兼容 Java 21）
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'it.unimi.dsi:fastutil:7.0.10'
+
+    implementation 'net.fabricmc:fabric-loader:0.14.12'
+    implementation 'cpw.mods:modlauncher:8.1.3'
+    implementation 'net.minecraft:launchwrapper:1.12'
+
+    implementation 'com.github.Chocohead:Fabric-ASM:2.3'
+}
 
 jar {
-    baseName 'vaultpatcher'
+    archiveBaseName.set('vaultpatcher')
 
     manifest {
         attributes([
@@ -21,7 +52,7 @@ jar {
     }
 
     from(configurations.runtimeClasspath.filter {
-        (it.name == 'Fabric-ASM-2.3.jar')
+        it.name == 'Fabric-ASM-2.3.jar'
     }) {
         into 'META-INF/jars'
     }
@@ -34,47 +65,3 @@ jar {
     exclude "net/neoforged/fml/common/Mod.class"
     exclude "net/neoforged/neoforgespi/**"
 }
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
-    disableAutoTargetJvm()
-}
-
-
-tasks.compileJava {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
-    options.encoding = 'UTF-8'
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        url "https://maven.fabricmc.net/"
-    }
-    maven {
-        url "https://maven.minecraftforge.net/"
-    }
-    maven {
-        url "https://libraries.minecraft.net/"
-    }
-    maven {
-        url 'https://jitpack.io/'
-    }
-}
-
-dependencies {
-    compileOnly 'org.jetbrains:annotations:23.0.0'
-
-    implementation 'com.google.code.gson:gson:2.2.4'
-    implementation 'it.unimi.dsi:fastutil:7.0.10'
-
-    implementation 'net.fabricmc:fabric-loader:0.14.12'
-    implementation 'cpw.mods:modlauncher:8.1.3'
-    implementation 'net.minecraft:launchwrapper:1.12'
-
-    implementation 'com.github.Chocohead:Fabric-ASM:2.3'
-}
-

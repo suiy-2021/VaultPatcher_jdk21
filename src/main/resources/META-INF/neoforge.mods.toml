@@ -6,7 +6,7 @@ license = "GPL-3.0"
     modId = "vaultpatcher"
     version = "${version}"
     displayName = "VaultPatcher"
-    authors = "FengMing3093"
+    authors = "本版本由suiy修改(原作者FengMing3093)"
     description = "Let the hard coded change into localization string in some mods."
 
 [[dependencies.vaultpatcher]]
